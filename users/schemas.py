@@ -5,4 +5,4 @@ from .models import User
 class UserSchema(ModelSchema):
     class Meta:
         model = User
-        fields = ["email", "password", "username", "first_name", "last_name"]
+        fields = ["email", "password", "username", "first_name", "last_name", "data_nascimento"]

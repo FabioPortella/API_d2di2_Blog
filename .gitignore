@@ -6,7 +6,7 @@ __pycache__/
 *.log
 
 # Ignorar o banco de dados SQLite
-db.sqlite3
+*.sqlite3
 
 # Ignorar arquivos de mídia (uploads, etc.)
 media/
@@ -55,6 +55,9 @@ wheels/
 # Ignorar logs do instalador do pip
 pip-log.txt
 pip-delete-this-directory.txt
+
+# Ignorar arquivos de migrações
+*/migrations/
 
 # Ignorar relatórios de testes de unidade/coverage
 htmlcov/
