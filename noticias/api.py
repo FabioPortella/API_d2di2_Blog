@@ -2,8 +2,10 @@ from typing import List, Optional
 import uuid
 from ninja import Router
 
+from users.models import User
+
 from .models import Noticia
-from .schemas import NoticiaSchema, MessageSchema
+from .schemas import NoticiaSchema, NoticiaInserirSchema, MessageSchema
 
 
 noticias_router = Router()
@@ -23,7 +25,7 @@ def listar_noticias(request, titulo: Optional[str] = None):
     
 
 @noticias_router.get('/{id}', response={200: NoticiaSchema, 404: MessageSchema, 500: MessageSchema})
-def obter_noticia(request, id: str):
+def obter_noticia(request, id: int):
     try:
         noticia = Noticia.objects.get(id=id)
         return 200, noticia
@@ -43,3 +45,20 @@ def excluir_noticia(request, id: str):
         return 404, {"message": "Notícia não encontrada"}
     except Exception as e:
         return 500, {"message": "Erro ao obter notícia"}
+
+
+@noticias_router.post('/', response={201: NoticiaSchema, 404: MessageSchema})
+def inserir_noticia(request, noticia: NoticiaInserirSchema):
+    try:
+        usuario = User.objects.get(id=noticia.autor)
+    except User.DoesNotExist:
+        return 404, {"message": "Usuário não existe"}
+    
+    noticia = Noticia.objects.create(
+        titulo = noticia.titulo,
+        sub_titulo = noticia.sub_titulo,
+        texto = noticia.texto,
+        autor = usuario,
+        publicado = noticia.publicado,
+    )
+    return 201, noticia

@@ -57,7 +57,7 @@ pip-log.txt
 pip-delete-this-directory.txt
 
 # Ignorar arquivos de migrações
-*/migrations/
+*/migrations/*
 
 # Ignorar relatórios de testes de unidade/coverage
 htmlcov/
