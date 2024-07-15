@@ -30,7 +30,8 @@ INSTALLED_APPS = [
     'rolepermissions',
     
     #meus apps
-    'users'
+    'users',
+    'noticias',
 ]
 
 AUTH_USER_MODEL = 'users.User'
