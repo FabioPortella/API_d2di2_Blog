@@ -15,3 +15,6 @@ class NoticiaSchema(ModelSchema):
             "data_modificacao",
             "publicado"
         ]
+
+class MessageSchema(Schema):
+    message: str
