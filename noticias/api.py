@@ -1,7 +1,6 @@
 from typing import List, Optional
 from ninja import Router
 
-from users.models import User
 from .models import Noticia
 from .schemas import NoticiaSchema, NoticiaInserirSchema, MessageSchema
 

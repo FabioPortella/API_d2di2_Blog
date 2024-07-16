@@ -1,7 +1,8 @@
 from django.utils import timezone
 from users.models import User
-import uuid
 from django.db import models
+
+#TODO: Criar validações nos campos de acordo com os requisitos do projeto.
 
 class Noticia(models.Model):
     titulo = models.CharField(max_length=100)
