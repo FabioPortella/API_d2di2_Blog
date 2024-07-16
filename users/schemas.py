@@ -15,3 +15,7 @@ class TypeSchema(Schema):
 class TypeUserSchema(Schema):
     user: UserSchema
     type_user: TypeSchema
+
+
+class MessageSchema(Schema):
+    message: str

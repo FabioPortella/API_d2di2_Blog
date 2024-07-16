@@ -1,5 +1,4 @@
 from typing import List, Optional
-import uuid
 from ninja import Router
 
 from users.models import User
@@ -35,20 +34,13 @@ def obter_noticia(request, id: int):
         return 500, {"message": "Erro ao obter notícia"}
     
 
-@noticias_router.delete('/{id}', response={200: MessageSchema, 404: MessageSchema, 500: MessageSchema})
-def excluir_noticia(request, id: str):
-    try:
-        noticia = Noticia.objects.get(id=id)
-        noticia.delete()
-        return 200, {"message": "Notícia excluida com sucesso"}
-    except Noticia.DoesNotExist:
-        return 404, {"message": "Notícia não encontrada"}
-    except Exception as e:
-        return 500, {"message": "Erro ao obter notícia"}
-
-
-@noticias_router.post('/', response={201: NoticiaSchema, 404: MessageSchema})
+@noticias_router.post('/', response={201: NoticiaSchema, 400: MessageSchema, 404: MessageSchema})
 def inserir_noticia(request, noticia: NoticiaInserirSchema):
+    # verificando se usuário tem permissão para inserir
+    user = request.user
+    if not user.groups.filter(name='autor').exists():
+        return 400, {"message": "Usuário não tem permissão para inserir notícias"}
+    
     try:
         usuario = User.objects.get(id=noticia.autor)
     except User.DoesNotExist:
@@ -62,3 +54,23 @@ def inserir_noticia(request, noticia: NoticiaInserirSchema):
         publicado = noticia.publicado,
     )
     return 201, noticia
+
+
+#TODO: Criar alterar noticia
+
+
+@noticias_router.delete('/{id}', response={200: MessageSchema, 400: MessageSchema, 404: MessageSchema, 500: MessageSchema})
+def excluir_noticia(request, id: int):
+    # verificando se usuário tem permissão para deletar
+    usuario = request.user
+    if not usuario.groups.filter(name='autor').exists():
+        return 400, {"message": "Usuário não tem permissão excluir notícia"}
+    
+    try:        
+        noticia = Noticia.objects.get(id=id)
+        noticia.delete()
+        return 200, {"message": "Notícia excluida com sucesso"}
+    except Noticia.DoesNotExist:
+        return 404, {"message": "Notícia não encontrada"}
+    except Exception as e:
+        return 500, {"message": "Erro ao obter notícia"}

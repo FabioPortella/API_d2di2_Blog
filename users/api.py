@@ -3,13 +3,13 @@ from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
 from rolepermissions.roles import assign_role
 
-from .schemas import UserSchema, TypeUserSchema
+from .schemas import MessageSchema, TypeUserSchema, UserSchema 
 from .models import User
 
 
 users_router = Router()
 
-@users_router.post('/', response={200: dict, 400: dict, 500: dict})
+@users_router.post('/', response={201: UserSchema, 400: MessageSchema, 500: MessageSchema})
 def create_user(request, user_e_type: TypeUserSchema):
     try:
         user = User(**user_e_type.user.dict())
@@ -22,4 +22,4 @@ def create_user(request, user_e_type: TypeUserSchema):
     except Exception as e:
         return 500, {'errors': 'Erro interno do servidor, solicite um administrador.'}
 
-    return {'Id do Usuário': user.id}
+    return 201, user
