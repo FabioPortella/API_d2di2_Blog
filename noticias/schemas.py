@@ -27,7 +27,6 @@ class NoticiaInserirSchema(ModelSchema):
             "titulo", 
             "sub_titulo", 
             "texto",
-            "autor", 
             "publicado"
         ]
 
