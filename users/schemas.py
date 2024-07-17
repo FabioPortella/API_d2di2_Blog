@@ -19,3 +19,4 @@ class TypeUserSchema(Schema):
 
 class MessageSchema(Schema):
     message: str
+    errors: dict = None

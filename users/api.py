@@ -17,9 +17,9 @@ def create_user(request, user_e_type: TypeUserSchema):
         user.full_clean()  # usar para reconhecer os validators
         user.save()
         assign_role(user, user_e_type.type_user.type)
+        return 201, user
     except ValidationError as e:
-        return 400, {'errors': e.message_dict}
+        return 400, MessageSchema(message='Erro de Validação', errors=e.message_dict)
     except Exception as e:
-        return 500, {'errors': 'Erro interno do servidor, solicite um administrador.'}
-
-    return 201, user
+        return 500, {'errors': 'Erro ao criar usuário.'}
+    

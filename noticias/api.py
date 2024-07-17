@@ -55,7 +55,7 @@ def inserir_noticia(request, noticia: NoticiaInserirSchema):
         return 500, {"message": "Erro ao inserir noticia"}
 
 
-@noticias_router.post('/{id}', response={201: NoticiaSchema, 400: MessageSchema, 404: MessageSchema})
+@noticias_router.put('/{id}', response={200: NoticiaSchema, 400: MessageSchema, 404: MessageSchema})
 def alterar_noticia(request, id: int, alteracoes_noticia: NoticiaInserirSchema):
 
     # verificando permissões do usuário
@@ -65,12 +65,14 @@ def alterar_noticia(request, id: int, alteracoes_noticia: NoticiaInserirSchema):
     
     try: 
         noticia = Noticia.objects.get(id=id)
+        if noticia.autor.id != user.id:
+            return 400, {"message": "Você não pode modificar uma noticia que você não criou."}
         noticia.titulo = alteracoes_noticia.titulo
         noticia.sub_titulo = alteracoes_noticia.sub_titulo
         noticia.texto = alteracoes_noticia.texto
         noticia.publicado = alteracoes_noticia.publicado
         noticia.save()     
-        return 201, noticia
+        return 200, noticia
     except Noticia.DoesNotExist:
         return 404, {"message": "Noticia não existe"}
     except Exception as e:
