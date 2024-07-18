@@ -1,7 +1,7 @@
 from typing import List, Optional
 from ninja import Router
 
-from .models import Noticia
+from .models import Noticia, User
 from .schemas import NoticiaSchema, NoticiaInserirSchema, MessageSchema
 
 
@@ -36,9 +36,9 @@ def obter_noticia(request, id: int):
 def inserir_noticia(request, noticia: NoticiaInserirSchema):
 
     # verificando permissões do usuário
-    user = request.user
-    if not user.groups.filter(name='autor').exists():
-        return 400, {"message": f"Usuário {user.username} não tem permissão para inserir notícias"}
+    user = User.objects.get(id=2)
+    # if not user.groups.filter(name='autor').exists():        
+    #     return 400, {"message": f"Usuário {user.username} não tem permissão para inserir notícias"}
     
     try:    
         noticia = Noticia.objects.create(
@@ -58,15 +58,15 @@ def inserir_noticia(request, noticia: NoticiaInserirSchema):
 @noticias_router.put('/{id}', response={200: NoticiaSchema, 400: MessageSchema, 404: MessageSchema})
 def alterar_noticia(request, id: int, alteracoes_noticia: NoticiaInserirSchema):
 
-    # verificando permissões do usuário
-    user = request.user
-    if not user.groups.filter(name='autor').exists():
-        return 400, {"message": "Usuário não tem permissão para alterar notícias"}
+    # # verificando permissões do usuário
+    # user = request.user
+    # if not user.groups.filter(name='autor').exists():
+    #     return 400, {"message": "Usuário não tem permissão para alterar notícias"}
     
     try: 
         noticia = Noticia.objects.get(id=id)
-        if noticia.autor.id != user.id:
-            return 400, {"message": "Você não pode modificar uma noticia que você não criou."}
+        # if noticia.autor.id != user.id:
+        #     return 400, {"message": "Você não pode modificar uma noticia que você não criou."}
         noticia.titulo = alteracoes_noticia.titulo
         noticia.sub_titulo = alteracoes_noticia.sub_titulo
         noticia.texto = alteracoes_noticia.texto
@@ -83,16 +83,17 @@ def alterar_noticia(request, id: int, alteracoes_noticia: NoticiaInserirSchema):
 def excluir_noticia(request, id: int):
 
     # verificando permissões do usuário
-    user = request.user
-    if not user.groups.filter(name='autor').exists():
-        return 400, {"message": "Usuário não tem permissão excluir notícia."} 
+    # user = request.user
+    # if not user.groups.filter(name='autor').exists():
+    #     print(f"Usuário {user} não tem permissão excluir notícia.")
+    #     return 400, {"message": "Usuário não tem permissão excluir notícia."} 
    
     try:        
         noticia = Noticia.objects.get(id=id)
-        if noticia.autor.id != user.id:
-            return 400, {"message": "Você não pode apagar uma noticia que você não criou."}
+        # if noticia.autor.id != user.id:
+        #     return 400, {"message": "Você não pode apagar uma noticia que você não criou."}
         if noticia.publicado:
-            return 400, {"message": "Notícia já publicada não poder ser excluida."}
+            return 400, {"message": "Noticia ja publicada nao poder ser excluida."}
         noticia.delete()
         return 200, {"message": "Notícia excluida com sucesso."}
     except Noticia.DoesNotExist:
