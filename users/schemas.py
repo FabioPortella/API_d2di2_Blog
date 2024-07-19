@@ -11,3 +11,9 @@ class UserSchema(ModelSchema):
 class MessageSchema(Schema):
     message: str
     errors: dict = None
+
+class AuthSchema(Schema):
+    email: str
+    password: str
+    callbackUrl: str
+    nome: str
